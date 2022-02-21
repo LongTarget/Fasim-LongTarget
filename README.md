@@ -19,7 +19,7 @@
 - [Citation](#citation)
 
 # Overview
-Many lncRNAs can bind to DNA sequences by forming RNA:DNA triplexes, by which they recruit histone modification and DNA methylation enzymes to binding sites to modify the epigenome. Since the formation of triplexes between lncRNA and DNA sequences follows Hoogsteen and reverse Hoogsteeen base-pairing rules, lncRNA/DNA binding can be predicted computationally.
+Many lncRNAs can bind to DNA sequences by forming RNA:DNA triplexes, by which they recruit histone modification and DNA methylation enzymes to binding sites to modify the epigenome. Since the formation of triplexes between lncRNA and DNA sequences follows Hoogsteen and reverse Hoogsteeen base-pairing rules, lncRNA/DNA bindings can be predicted computationally.
 
 LongTarget has been developed to predict one or many lncRNA's DNA binding motifs and binding sites in one or many genome regions based on all known ncRNA/DNA base pairing rules. The fasim-LongTarget is a variant of LongTarget that was modified to reduce the time consumption. Fasim-LongTarget consists of a few C/C++ programs, and is distributed under the AGPLv3 license. Tests on experimentally-generated lncRNA/DNA binding datasets indicate the good performance and low time consumption of fasim-LongTarget.
 
@@ -33,12 +33,12 @@ LongTarget has been developed to predict one or many lncRNA's DNA binding motifs
 - [ssw_cpp.cpp](./ssw_cpp.cpp): The program for getting the maximal scores of local maximum.
 - [ssw_cpp.h](./ssw_cpp.h): The header file of ssw_cpp.cpp.
 - [fastsim.h](./fastsim.h): The fasim program for getting k non-overlapping local alignments.
-- [H19.fa](./H19.fa):  A sample lncRNA sequence.  
-- [testDNA.fa](./testDNA.fa): A sample DNA sequence. 
+- [H19.fa](./H19.fa): An example of lncRNA sequence.  
+- [testDNA.fa](./testDNA.fa): An example of DNA sequence. 
 
 # System Requirements
-- OS: Linux, we compile and run the fasim-LongTarget under CentOS 6.0. 
-- System software:	g++.
+- OS: Linux. Fasim-LongTarget has been tested to compile and run under CentOS 6.0. 
+- System software: g++.
 - RAM: 16G or above, depending on the number of lncRNAs and length of genome region.
 - CPU: 4 cores or above, depending on the number of lncRNAs and length of genome region.
 
