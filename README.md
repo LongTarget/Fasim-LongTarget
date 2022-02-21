@@ -85,15 +85,15 @@ lg   c_length           An integer, indicate the min length of triplexes, the de
 ```
 
 ## Time consumption
-This depends on the number and length of lncRNAs and the length of genome regions. The expected running time for a 3000bp lncRNA and a 5000bp DNA should be ~2 seconds on a normal desktop computer. 
+This depends on the number and length of lncRNAs and the length of genome regions. The expected running time for a 3000bp lncRNA and a 5000bp DNA is ~2 seconds on a normal desktop computer. 
 
 # Demo
 ## Inputs and their formats
 H19.fa and testDNA.fa are two demo examples of lncRNA and DNA sequence files, respectively. To obtain more details, go to our website http://lncRNA.smu.edu.cn and/or check files in the "examples" subdirectory.
 
-In the lncRNA sequence file, the title line should be like ¡°>lncRNA_name¡±, and the lncRNA sequence should be in a new line.
+In the lncRNA sequence file, the title line should be like ">lncRNA_name", and the lncRNA sequence should be in a new line.
 
-In the DNA sequence file, the title line should be like ¡°>species|chr|start-end¡±, where the chr, start and end indicate the genomic coordinate, and the DNA sequence should be in a new line.
+In the DNA sequence file, the title line should be like ">species|chr|start-end", where chr, start and end indicate the genomic coordinate, and the DNA sequence should be in a new line.
 
 ## Results
 The results include three files whose filenames ending with: (1)*TFOsorted, (2)*TFOclass1, (3)*TFOclass2. The TFOsorted file contains the details of all triplexes, the TFOclass1 file contains the TTS distribution of TFO1 in the genome region, and the TFOclass2 file contains the TTS distribution of TFO2. 
