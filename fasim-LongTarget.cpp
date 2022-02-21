@@ -14,7 +14,7 @@
 * Need to check the performance of fastSim.
 * Note that cutSequence has been moved to fastSim.h.
 */
-#include "fastSim3.h"
+#include "fastSim.h"
 using namespace std;
 struct lgInfo
 {
