@@ -1,0 +1,19 @@
+browser position chrX:149626656-149629148
+browser hide all
+browser pack refGene encodeRegions
+browser full altGraph
+# 300 base wide bar graph, ausoScale is on by default == graphing
+# limits will dynamically change to always show full range of data
+# in viewing window, priority = 20 position this as the second graph
+# Note, zero-relative, half-open coordinate system in use for bedGraph format
+track type=bedGraph name='MEG3-ENST00000451743 TTS (2)' description='15-40' visibility=full color=200,100,0 altColor=0,100,200 priority=20
+chrX	149628057	149628108	2
+chrX	149628108	149628846	0
+chrX	149628846	149628892	1
+chrX	149628892	149628893	1
+chrX	149628070	149628079	1
+chrX	149628079	149628087	2
+chrX	149628087	149628145	3
+chrX	149628145	149628151	2
+chrX	149628151	149628154	1
+chrX	149628154	149628155	1

@@ -1,0 +1,29 @@
+browser position chr20:62393362-62439777
+browser hide all
+browser pack refGene encodeRegions
+browser full altGraph
+# 300 base wide bar graph, ausoScale is on by default == graphing
+# limits will dynamically change to always show full range of data
+# in viewing window, priority = 20 position this as the second graph
+# Note, zero-relative, half-open coordinate system in use for bedGraph format
+track type=bedGraph name='MALAT1 TTS (1)' description='15-40' visibility=full color=200,100,0 altColor=0,100,200 priority=20
+chr20	62396737	62396791	1
+chr20	62396791	62404951	0
+chr20	62404951	62404996	1
+chr20	62404996	62405041	0
+chr20	62405041	62405098	1
+chr20	62405098	62405853	0
+chr20	62405853	62405895	1
+chr20	62405895	62406049	0
+chr20	62406049	62406104	1
+chr20	62406104	62406643	0
+chr20	62406643	62406709	1
+chr20	62406709	62406838	0
+chr20	62406838	62406902	1
+chr20	62406902	62407190	0
+chr20	62407190	62407250	1
+chr20	62407250	62409874	0
+chr20	62409874	62409927	1
+chr20	62409927	62435434	0
+chr20	62435434	62435476	1
+chr20	62435476	62435477	1

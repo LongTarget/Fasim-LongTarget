@@ -1,0 +1,27 @@
+browser position chr1:201210499-201214650
+browser hide all
+browser pack refGene encodeRegions
+browser full altGraph
+# 300 base wide bar graph, ausoScale is on by default == graphing
+# limits will dynamically change to always show full range of data
+# in viewing window, priority = 20 position this as the second graph
+# Note, zero-relative, half-open coordinate system in use for bedGraph format
+track type=bedGraph name='NEAT1 TTS (1)' description='15-40' visibility=full color=200,100,0 altColor=0,100,200 priority=20
+chr1	201211914	201211958	1
+chr1	201211958	201212378	0
+chr1	201212378	201212421	1
+chr1	201212421	201213136	0
+chr1	201213136	201213177	1
+chr1	201213177	201213325	0
+chr1	201213325	201213371	1
+chr1	201213371	201213637	0
+chr1	201213637	201213694	1
+chr1	201213694	201213701	0
+chr1	201213701	201213756	1
+chr1	201213756	201213793	0
+chr1	201213793	201213844	1
+chr1	201213844	201213924	0
+chr1	201213924	201213971	1
+chr1	201213971	201214124	0
+chr1	201214124	201214176	1
+chr1	201214176	201214177	1

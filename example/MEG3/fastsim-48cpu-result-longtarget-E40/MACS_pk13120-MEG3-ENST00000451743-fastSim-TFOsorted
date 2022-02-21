@@ -1,0 +1,2 @@
+QueryStart	QueryEnd	StartInSeq	EndInSeq	Direction	StartInGenome	EndInGenome	MeanStability	MeanIdentity(%)	Strand	Rule	Score	Nt(bp)	Class	MidPoint	Center	TFO sequenceTTS sequence
+839	884	1118	1162	R	5908079	5908123	1.83696	71.7391	AntiMinus	5	101	46	1	861	860	CCCTTCCCACCCCTCTTGCTTGTCTTACTTGTCTTATTTATTCTC	CCCAACCAACCCCCCTAATGTATAGAGAC-AGAGATAAAAGGAGAG
