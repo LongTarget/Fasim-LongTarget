@@ -630,7 +630,8 @@ void convertMyTriplex(StripedSmithWaterman::Alignment alignment,
 	fullTriplex = triplex(alignment.query_begin+1, alignment.query_end+1,
 		refStart + dnaStartPos, refEnd + dnaStartPos,
 		strand, Para, rule, nt, score, identity, tri_score,
-		read_align, ref_align_src, 0, 0, 0, 0);
+		read_align, ref_align_src, 0, 0, 0, 0,0,0,"");
+//	cout<<read_align<<endl;
 	// filter fullTriplex based on ntMin.
 	if (nt >= ntMin)
 	{

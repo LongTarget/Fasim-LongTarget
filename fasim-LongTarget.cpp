@@ -74,10 +74,9 @@ int same_seq(string &w_str);
 void printResult(string &species, struct para paraList, string &lncName,
 	string &dnaFile, vector<struct triplex> &sort_triplex_list,
 	string &chroTag, string &dnaSequence, int start_genome,
-	string &c_tmp_dd, string &c_tmp_length, string &resultDir);
+	string &c_tmp_dd, string &c_tmp_length, string &resultDir,string lncSeq);
 
-string readDna(string dnaFileName, string &species, string &chroTag,
-	string &startGenome);
+void readDna(string dnaFileName, vector<string> &speciess, vector<string> &chroTags,vector<long> &startGenomes,vector<string> &dnaSeqs);
 string readRna(string rnaFileName, string &lncName);
 void cluster_triplex(int dd, int length, vector<struct triplex>& triplex_list, map<size_t, size_t> class1[], map<size_t, size_t> class1a[], map<size_t, size_t> class1b[], int class_level);
 void print_cluster(int c_level, map<size_t, size_t> class1[], int start_genome, string &chro_info, int dna_size, string &rna_name, int distance, int length, string &outFilePath, string &c_tmp_dd, string &c_tmp_length, vector<struct tmp_class> &w_tmp_class);
@@ -103,34 +102,47 @@ int main(int argc, char* const* argv)
 	}
 	string lncName;
 	string lncSeq;
-	string species;
-	string dnaChroTag;
+//	string species;
+//	string dnaChroTag;
 	string fileName;
-	string dnaSeq;
+//	string dnaSeq;
 	string resultDir;
-	string startGenomeTmp;
+//	string startGenomeTmp;
+    vector<string> species;
+    vector<string> dnaChroTag;
+    vector<long> startGenomeTmp;
+    vector<string> dnaSeq;
 	long startGenome;
 	clock_t start, end;
 	float cpu_time;
 	start = clock();
-	dnaSeq = readDna(paraList.file1path, species, dnaChroTag, startGenomeTmp);
-	startGenome = atoi(startGenomeTmp.c_str());
+	readDna(paraList.file1path, species, dnaChroTag, startGenomeTmp,dnaSeq);
+//	startGenome = atoi(startGenomeTmp.c_str());
 	lncSeq = readRna(paraList.file2path, lncName);
 	fileName = paraList.file1path.substr(0, paraList.file1path.size() - 3);
 	lncName.erase(remove(lncName.begin(), lncName.end(), '\r'), lncName.end());
 	lncName.erase(remove(lncName.begin(), lncName.end(), '\n'), lncName.end());
 	resultDir = paraList.outpath;
 	struct lgInfo algInfo;
-	algInfo = lgInfo(lncName, lncSeq, species, dnaChroTag, fileName, dnaSeq,
-		startGenome, resultDir);
-	lgList.push_back(algInfo);
-	int i = 0;
+	triplex atriplex;
 	vector<struct triplex> sort_triplex_list;
-	LongTarget(paraList, lgList[i].lncSeq, lgList[i].dnaSeq, sort_triplex_list);
-	printResult(lgList[i].species, paraList, lgList[i].lncName,
-		lgList[i].fileName, sort_triplex_list, lgList[i].dnaChroTag,
-		lgList[i].dnaSeq, lgList[i].startGenome, c_tmp_dd, c_tmp_length,
-		lgList[i].resultDir);
+	for(int i=0;i<species.size();i++){
+		algInfo = lgInfo(lncName, lncSeq, species[i], dnaChroTag[i], fileName, dnaSeq[i],startGenomeTmp[i], resultDir);
+	    lgList.push_back(algInfo);
+	    LongTarget(paraList, lgList[i].lncSeq, lgList[i].dnaSeq, sort_triplex_list);
+	    for(int j=0;j<sort_triplex_list.size();j++)
+	    {
+	        atriplex = sort_triplex_list[j];
+	        if(atriplex.genomestart==0){
+	        sort_triplex_list[j].chr = dnaChroTag[i];
+	        sort_triplex_list[j].genomestart = atriplex.starj+startGenomeTmp[i]-1;
+	        sort_triplex_list[j].genomeend = atriplex.endj+startGenomeTmp[i]-1;
+	        }
+	    }
+	}
+	printResult(lgList[0].species, paraList, lncName,
+		fileName, sort_triplex_list, lgList[0].dnaChroTag,
+		lgList[0].dnaSeq, lgList[0].startGenome, c_tmp_dd, c_tmp_length,resultDir,lncSeq);
 	end = clock();
 	cout << "finished normally" << endl;
 	cpu_time = ((float)(end - start)) / CLOCKS_PER_SEC;
@@ -178,26 +190,46 @@ string readRna(string rnaFileName, string &lncName)
 	cout << lncName << endl;
 	while (getline(rnaFile, tmpStr))
 	{
+	    tmpStr.erase(remove(tmpStr.begin(), tmpStr.end(), '\r'), tmpStr.end());
+	    tmpStr.erase(remove(tmpStr.begin(), tmpStr.end(), '\n'), tmpStr.end());
 		tmpRNA = tmpRNA + tmpStr;
 	}
 	return tmpRNA;
 }
 
-string readDna(string dnaFileName, string &species, string &chroTag,
-	string &startGenome)
+void readDna(string dnaFileName, vector<string> &speciess, vector<string> &chroTags,vector<long> &startGenomes,vector<string> &dnaSeqs)
 {
 	ifstream dnaFile;
-	string tmpDNA;
+	string tmpDNA="";
 	string tmpStr;
 	dnaFile.open(dnaFileName.c_str());
-	getline(dnaFile, tmpStr);
+//	getline(dnaFile, tmpStr);
 	int i = 0;
 	int j = 0;
 	string tmpInfo;
-	for (i = 0; i < tmpStr.size(); i++)
-	{
+	string species;
+	string chroTag;
+    string startGenome;
+
+	while(getline(dnaFile, tmpStr)){
+	    if(tmpDNA!="" && tmpStr[0]=='>'){
+    speciess.push_back(species);
+    chroTags.push_back(chroTag);
+    startGenomes.push_back(atoi(startGenome.c_str()));
+    dnaSeqs.push_back(tmpDNA);
+                cout << species << endl;
+            cout << chroTag << endl;
+            cout << startGenome << endl;
+//            cout<<tmpDNA[5]<<endl;
+    tmpDNA = "";
+    j = 0;
+    }
+	if(tmpStr[0]=='>'){
+			for (i = 0; i < tmpStr.size(); i++)
+	        {
 		if (tmpStr[i] == '>')
 		{
+		    tmpInfo.clear();
 			continue;
 		}
 		if (tmpStr[i] == '|' && j == 0)
@@ -222,14 +254,22 @@ string readDna(string dnaFileName, string &species, string &chroTag,
 		}
 		tmpInfo = tmpInfo + tmpStr[i];
 	}
-	cout << species << endl;
-	cout << chroTag << endl;
-	cout << startGenome << endl;
-	while (getline(dnaFile, tmpStr))
-	{
-		tmpDNA = tmpDNA + tmpStr;
+
 	}
-	return tmpDNA;
+    else{
+        tmpStr.erase(remove(tmpStr.begin(), tmpStr.end(), '\r'), tmpStr.end());
+	    tmpStr.erase(remove(tmpStr.begin(), tmpStr.end(), '\n'), tmpStr.end());
+        tmpDNA = tmpDNA + tmpStr;
+    }
+	}
+    speciess.push_back(species);
+    chroTags.push_back(chroTag);
+    startGenomes.push_back(atoi(startGenome.c_str()));
+    dnaSeqs.push_back(tmpDNA);
+                cout << species << endl;
+            cout << chroTag << endl;
+            cout << startGenome << endl;
+//            cout<<tmpDNA[5]<<endl;
 }
 
 void initEnv(int argc, char * const *argv, struct para &paraList)
@@ -836,17 +876,19 @@ void print_cluster(int c_level, map<size_t, size_t> class1[], int start_genome, 
 	}
 }
 
-void printResult(string &species, struct para paraList, string &lncName, string &dnaFile, vector<struct triplex> &sort_triplex_list, string &chroTag, string &dnaSequence, int start_genome, string &c_tmp_dd, string &c_tmp_length, string &resultDir)
+void printResult(string &species, struct para paraList, string &lncName, string &dnaFile, vector<struct triplex> &sort_triplex_list, string &chroTag, string &dnaSequence, int start_genome, string &c_tmp_dd, string &c_tmp_length, string &resultDir,string lncSeq)
 {
 	vector<struct tmp_class> w_tmp_class;
 	string pre_file2 = resultDir + "/" + species + "-" + lncName;
 	string outFilePath = pre_file2 + "-fastSim-TFOsorted";
 	ofstream outFile(outFilePath.c_str(), ios::trunc);
-	outFile << "QueryStart\t" << "QueryEnd\t" << "StartInSeq\t" << "EndInSeq\t" << "Direction\t" << "StartInGenome\t" << "EndInGenome\t" << "MeanStability\t" << "MeanIdentity(%)\t" << "Strand\t" << "Rule\t" << "Score\t" << "Nt(bp)\t" << "Class\t" << "MidPoint\t" << "Center\t" << "TFO sequence" << "TTS sequence"<< endl;
+	outFile << "QueryStart\t" << "QueryEnd\t" << "StartInSeq\t" << "EndInSeq\t" << "Direction\t" << "Chr\t" <<"StartInGenome\t" << "EndInGenome\t" << "MeanStability\t" << "MeanIdentity(%)\t" << "Strand\t" << "Rule\t" << "Score\t" << "Nt(bp)\t" << "Class\t" << "MidPoint\t" << "Center\t" << "TFO sequence\t" << "TTS sequence"<< endl;
 	map<size_t, size_t> class1[6], class1a[6], class1b[6];
 	int class_level = 5;
 	cluster_triplex(paraList.cDistance, paraList.cLength, sort_triplex_list, class1, class1a, class1b, class_level);
 	sort(sort_triplex_list.begin(), sort_triplex_list.end(), comp);
+	long tfostart[5];
+	long tfoend[6];
 	for (int i = 0; i < sort_triplex_list.size(); i++)
 	{
 		triplex atr = sort_triplex_list[i];
@@ -854,27 +896,28 @@ void printResult(string &species, struct para paraList, string &lncName, string 
 		{
 			continue;
 		}
-
 //		atr.stri_align.erase(remove(atr.stri_align.begin(), atr.stri_align.end(), '-'), atr.stri_align.end());
 		if (atr.starj < atr.endj)
-			outFile << atr.stari << "\t" << atr.endi << "\t" << atr.starj << "\t" << atr.endj << "\t" << "R\t" << atr.starj + start_genome - 1 << "\t" << atr.endj + start_genome - 1 << "\t" << atr.tri_score << "\t" << atr.identity << "\t" << getStrand(atr.reverse, atr.strand) << "\t" << atr.rule << "\t" << atr.score << "\t" << atr.nt << "\t" << atr.motif << "\t" << atr.middle << "\t" << atr.center << "\t" << atr.stri_align << "\t" << atr.strj_align<< endl;
+			outFile << atr.stari << "\t" << atr.endi << "\t" << atr.starj << "\t" << atr.endj << "\t" << "R\t" << atr.chr <<"\t"<<atr.genomestart  << "\t" << atr.genomeend << "\t" << atr.tri_score << "\t" << atr.identity << "\t" << getStrand(atr.reverse, atr.strand) << "\t" << atr.rule << "\t" << atr.score << "\t" << atr.nt << "\t" << atr.motif << "\t" << atr.middle << "\t" << atr.center << "\t" << atr.stri_align << "\t" << atr.strj_align<< endl;
 		else
-			outFile << atr.stari << "\t" << atr.endi << "\t" << atr.starj << "\t" << atr.endj << "\t" << "L\t" << atr.endj + start_genome - 1 << "\t" << atr.starj + start_genome - 1 << "\t" << atr.tri_score << "\t" << atr.identity << "\t" << getStrand(atr.reverse, atr.strand) << "\t" << atr.rule << "\t" << atr.score << "\t" << atr.nt << "\t" << atr.motif << "\t" << atr.middle << "\t" << atr.center << "\t" << atr.stri_align << "\t" << atr.strj_align<< endl;
+			outFile << atr.stari << "\t" << atr.endi << "\t" << atr.starj << "\t" << atr.endj << "\t" << "L\t" << atr.chr <<"\t"<<atr.genomestart << "\t" << atr.genomeend << "\t" << atr.tri_score << "\t" << atr.identity << "\t" << getStrand(atr.reverse, atr.strand) << "\t" << atr.rule << "\t" << atr.score << "\t" << atr.nt << "\t" << atr.motif << "\t" << atr.middle << "\t" << atr.center << "\t" << atr.stri_align << "\t" << atr.strj_align<< endl;
+
 	}
 	outFile.close();
-	int pr_loop = 0;
-	for (pr_loop = 1; pr_loop < 3; pr_loop++)
-	{
-		print_cluster(pr_loop, class1, start_genome - 1, chroTag, dnaSequence.size(), lncName, paraList.cDistance, paraList.cLength, outFilePath, c_tmp_dd, c_tmp_length, w_tmp_class);
-	}
-	vector<struct tmp_class>tmpClass;
-	tmpClass.swap(w_tmp_class);
-	for (pr_loop = 0; pr_loop < 6; pr_loop++)
-	{
-		class1[pr_loop].clear();
-		class1a[pr_loop].clear();
-		class1b[pr_loop].clear();
-	}
+
+//	int pr_loop = 0;
+//	for (pr_loop = 1; pr_loop < 3; pr_loop++)
+//	{
+//		print_cluster(pr_loop, class1, start_genome - 1, chroTag, dnaSequence.size(), lncName, paraList.cDistance, paraList.cLength, outFilePath, c_tmp_dd, c_tmp_length, w_tmp_class);
+//	}
+//	vector<struct tmp_class>tmpClass;
+//	tmpClass.swap(w_tmp_class);
+//	for (pr_loop = 0; pr_loop < 6; pr_loop++)
+//	{
+//		class1[pr_loop].clear();
+//		class1a[pr_loop].clear();
+//		class1b[pr_loop].clear();
+//	}
 }
 
 bool comp(const triplex &a, const triplex &b)

@@ -7,7 +7,7 @@
 #include <map>
 #include <algorithm>
 #include <ctype.h>
-#include <omp.h>
+//#include <omp.h>
 #include <list>
 #include<sys/types.h>
 #include<dirent.h>
@@ -20,8 +20,8 @@ using namespace std;
 struct triplex
 {
 	triplex() {};
-	triplex(int n1, int n2, int n3, int n4, int n5, int n6, int n7, int n8, float f1, float f2, float f3, const string &s1, const string &s2, int w1, int w2, int w3, int w4) :
-		stari(n1), endi(n2), starj(n3), endj(n4), strand(n5), reverse(n6), rule(n7), nt(n8), score(f1), identity(f2), tri_score(f3), stri_align(s1), strj_align(s2), middle(w1), center(w2), motif(w3), neartriplex(w4) {};
+	triplex(int n1, int n2, int n3, int n4, int n5, int n6, int n7, int n8, float f1, float f2, float f3, const string &s1, const string &s2, int w1, int w2, int w3, int w4,long genomestart,long genomeend,string chr) :
+		stari(n1), endi(n2), starj(n3), endj(n4), strand(n5), reverse(n6), rule(n7), nt(n8), score(f1), identity(f2), tri_score(f3), stri_align(s1), strj_align(s2), middle(w1), center(w2), motif(w3), neartriplex(w4),genomestart(genomestart),genomeend(genomeend) ,chr(chr){};
 	int stari;
 	int endi;
 	int starj;
@@ -39,6 +39,9 @@ struct triplex
 	int center;
 	int motif;
 	int neartriplex;
+	long genomestart;
+	long genomeend;
+	string chr;
 };
 
 typedef struct NODE
@@ -741,7 +744,7 @@ void SIM(string& strA, string& strB, string& strSrc, long dnaStartPos, long min_
                     refStart = starj;
                     refEnd = endj;
                 }
-                atriplex = triplex(stari, endi, refStart + dnaStartPos, refEnd + dnaStartPos, strand, Para, rule, nt, final_score, identity, tri_score, stri_align, tmpstrj, 0, 0, 0, 0);
+                atriplex = triplex(stari, endi, refStart + dnaStartPos, refEnd + dnaStartPos, strand, Para, rule, nt, final_score, identity, tri_score, stri_align, tmpstrj, 0, 0, 0, 0,0,0,"");
 			    triplex_list.push_back(atriplex);
 			}
 			else {
@@ -813,7 +816,7 @@ void SIM(string& strA, string& strB, string& strSrc, long dnaStartPos, long min_
 //                        cout<<strj_align.substr(starttmp, nttmp)<<endl;
 //		                cout<<tmpstrj<<endl;
 //			            cout << rule << " is rule " << strand <<" is strand " << Para << " is Para "<< score <<" is score " <<stari << ' ' << endi << " is readstart readend " << refStart + dnaStartPos << "  " << refEnd + dnaStartPos << " is refstart refend " << identity <<" is identity "<< tri_score<<" is triscore "<< nttmp <<" is nt(bp)" <<endl;
-                        atriplex = triplex(stari, stari+k, refEnd -j  + dnaStartPos, refEnd + dnaStartPos, strand, Para, rule, nttmp, final_score, identity, tri_score, stri_align.substr(starttmp, nttmp), tmpstrj, 0, 0, 0, 0);
+                        atriplex = triplex(stari, stari+k, refEnd -j  + dnaStartPos, refEnd + dnaStartPos, strand, Para, rule, nttmp, final_score, identity, tri_score, stri_align.substr(starttmp, nttmp), tmpstrj, 0, 0, 0, 0,0,0,"");
 			            triplex_list.push_back(atriplex);
 					}
 					stari = stari + k;
@@ -881,7 +884,7 @@ void SIM(string& strA, string& strB, string& strSrc, long dnaStartPos, long min_
 //                    cout<<strj_align.substr(starttmp, nttmp)<<endl;
 //                    cout<<tmpstrj<<endl;
 //                    cout << rule << " is rule " << strand <<" is strand " << Para << " is Para "<< score <<" is score " <<stari << ' ' << endi << " is readstart readend " << refStart + dnaStartPos << "  " << refEnd + dnaStartPos << " is refstart refend " << identity <<" is identity "<< tri_score<<" is triscore "<< nttmp <<" is nt(bp)" <<endl;
-                    atriplex = triplex(stari, stari+k, refEnd -j  + dnaStartPos, refEnd + dnaStartPos, strand, Para, rule, nttmp, final_score, identity, tri_score, stri_align.substr(starttmp, nttmp), tmpstrj, 0, 0, 0, 0);
+                    atriplex = triplex(stari, stari+k, refEnd -j  + dnaStartPos, refEnd + dnaStartPos, strand, Para, rule, nttmp, final_score, identity, tri_score, stri_align.substr(starttmp, nttmp), tmpstrj, 0, 0, 0, 0,0,0,"");
                     triplex_list.push_back(atriplex);
 				}
 			}
