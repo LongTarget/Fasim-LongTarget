@@ -63,7 +63,7 @@ A more complex case is:
 ./fasim -f testDNA.fa -s H19.fa -O output/ -c 6000 -i 70 -S 1.0 -nt 25 -na 1000 -pc 1 -pt -500 -ds 10 -lg 60
 ```
 
-In this command, output path is output/, cut sequence's length is 6000, identity is 70%, stability is 1.0, ntMin is 25 nt, ntMax is 1000 nt, penaltyC is 1, penaltyT is -500, distance between TFOs is 10, min length of triplexes is 60 (for more details about parameters, visit the website http://lncRNA.smu.edu.cn).
+In this command, output path is output/ (pre-created directory), cut sequence's length is 6000, identity is 70%, stability is 1.0, ntMin is 25 nt, ntMax is 1000 nt, penaltyC is 1, penaltyT is -500, distance between TFOs is 10, min length of triplexes is 60 (for more details about parameters, visit the website http://lncRNA.smu.edu.cn).
 
 ## Help information
 Here is a brief explanation of the command line arguments:
@@ -96,7 +96,7 @@ In the lncRNA sequence file, the title line should be like ">lncRNA_name", and t
 In the DNA sequence file, the title line should be like ">species|chr|start-end", where chr, start and end indicate the genomic coordinate, and the DNA sequence should be in a new line.
 
 ## Results
-The results include three files whose filenames ending with: (1)*TFOsorted, (2)*TFOclass1, (3)*TFOclass2. The TFOsorted file contains the details of all triplexes, the TFOclass1 file contains the TTS distribution of TFO1 in the genome region, and the TFOclass2 file contains the TTS distribution of TFO2. 
+Generally, the program outputs a result file whose filename ending with "-TFOsorted". The TFOsorted file contains the details of all triplexes.
 
 ## Example datasets
 The computationally-predicted and experimentally-generated lncRNA/DNA binding datasets of MEG3, NEAT1 and MALAT1 are given in the subdirectory "examples".
