@@ -624,14 +624,19 @@ namespace StripedSmithWaterman {
 			flag, filter.score_filter, filter.distance_filter, maskLen);
 
 		alignment->Clear();
-		ConvertAlignment(*s_al, query_len, alignment);
+				if(s_al!=NULL){
+		    ConvertAlignment(*s_al, query_len, alignment);
+		    align_destroy(s_al);
+		}
+		else{
+		    alignment->sw_score = 0;
+		}
 		//2021-09-16 22:38:00: to get original cigar string.
 		//alignment->mismatches = CalculateNumberMismatch(&*alignment, translated_ref, translated_query, query_len);
 
 		// Free memory
 		delete[] translated_query;
 		delete[] translated_ref;
-		align_destroy(s_al);
 		init_destroy(profile);
 
 		return true;

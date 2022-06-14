@@ -60,7 +60,7 @@
  *	Last revision by Mengyao Zhao on 2019-03-04.
  *
  *  The lazy-F loop implementation was derived from SWPS3, which is
- *  MIT licensed under ETH Z��rich, Institute of Computational Science.
+ *  MIT licensed under ETH Z  rich, Institute of Computational Science.
  *
  *  The core SW loop referenced the swsse2 implementation, which is
  *  BSD licensed under Micharl Farrar.
@@ -91,7 +91,8 @@
 #include <string.h>
 #include <math.h>
 #include "ssw.h"
-
+#include <iostream>
+using std::cout;
 #ifdef __GNUC__
 #define LIKELY(x) __builtin_expect((x),1)
 #define UNLIKELY(x) __builtin_expect((x),0)
@@ -445,7 +446,7 @@ uint8_t * sw_sse2_byte_once(const int8_t* ref,
 	// output all score which is larger than threshold.
 	// 2021-09-29 15:42:27: slightly modify the return value, now return the 
 	// matrix instead of return the bests.
-	int **scoreMatrix;
+//	int **scoreMatrix;
 //	scoreMatrix = allocateMatrix(refLen, 2);
 //	for(i = 0; i < refLen; i++)
 //	{
@@ -456,7 +457,7 @@ uint8_t * sw_sse2_byte_once(const int8_t* ref,
 //			fprintf(stderr, "%d is score %d is ref\n", maxColumn[i], i);
 //		}
 //	}
-	free(maxColumn);
+//	free(maxColumn);
 	free(end_read_column);
 	return maxColumn;
 	//return bests;
@@ -1143,9 +1144,10 @@ static cigar* banded_sw(const int8_t* ref,
 				h_c[u] = temp1 > temp2 ? temp1 : temp2;
 
 				if (h_c[u] > max) max = h_c[u];
-
+                if ((ref[j] * n + read[i])>=25) cout<<i<<"----------error------"<<j<<"\n";
 				if (temp1 <= temp2) direction_line[dh] = 1;
 				else direction_line[dh] = e1 > f1 ? direction_line[de] : direction_line[df];
+//				cout<<"j:"<<j<<"\tscore:\t"<<h_c[u]<<"\t";
 			}
 			for (j = 1; j <= u; j++) h_b[j] = h_c[j];
 		}
@@ -1320,7 +1322,7 @@ int * ssw_pre_align(const s_profile* prof,
 	int32_t word = 0, band_width = 0, readLen = prof->readLen;
 	int8_t* read_reverse = 0;
 	int *scoreMatrix;
-	uint8_t *byteColumn;
+	uint8_t* byteColumn = (uint8_t*)calloc(refLen, 1);;
 	uint16_t *wordColumn;
 	byteColumn = NULL;
 	wordColumn = NULL;
@@ -1499,7 +1501,7 @@ s_align* ssw_align(const s_profile* prof,
 		r->score2 = 0;
 		r->ref_end2 = -1;
 	}
-	free(bests);
+
 	if (flag == 0 || (flag == 2 && r->score1 < filters)) goto end;
 
 	// Find the beginning position of the best alignment.
@@ -1512,17 +1514,23 @@ s_align* ssw_align(const s_profile* prof,
 		vP = qP_word(read_reverse, prof->mat, r->read_end1 + 1, prof->n);
 		bests_reverse = sw_sse2_word(ref, 1, r->ref_end1 + 1, r->read_end1 + 1, weight_gapO, weight_gapE, vP, r->score1, maskLen);
 	}
-	free(vP);
-	free(read_reverse);
+//	cout<<bests_reverse[0].score<<"\t"<<bests[0].score<<"\n";
+	r->score1 = bests_reverse[0].score<bests[0].score?bests_reverse[0].score:bests[0].score;
 	r->ref_begin1 = bests_reverse[0].ref;
 	r->read_begin1 = r->read_end1 - bests_reverse[0].read;
 	free(bests_reverse);
+	free(vP);
+	free(read_reverse);
+	free(bests);
 	if ((7 & flag) == 0 || ((2 & flag) != 0 && r->score1 < filters) || ((4 & flag) != 0 && (r->ref_end1 - r->ref_begin1 > filterd || r->read_end1 - r->read_begin1 > filterd))) goto end;
 
 	// Generate cigar.
 	refLen = r->ref_end1 - r->ref_begin1 + 1;
 	readLen = r->read_end1 - r->read_begin1 + 1;
 	band_width = abs(refLen - readLen) + 1;
+
+//	cout<<r->score1<<"\tref_begin1\t"<<r->ref_begin1<<"\tref_end1\t"<<r->ref_end1<<"\tread_begin1\t"<<r->read_begin1<<"\tread_end1\t"<<r->read_end1<<"\t"<<band_width<<"\n";
+
 	path = banded_sw(ref + r->ref_begin1, prof->read + r->read_begin1, refLen, readLen, r->score1, weight_gapO, weight_gapE, band_width, prof->mat, prof->n);
 	if (path == 0) {
 		free(r);
